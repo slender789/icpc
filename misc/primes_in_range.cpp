@@ -1,28 +1,35 @@
-#include <bits/stdc++.h>
-#define max 1000000
+#include <iostream>
+#include <vector>
+#include <bitset>
+#include <set>
+#include <cmath>
+
 using namespace std;
 
-vector<int> primes(){
-    bitset<max>bits;
-    bits[0]=bits[1]=1;
-    int raiz=(static_cast<int>(sqrt(max)))+1;
+// Constant to define the maximum limit for prime calculation
+const int MAX = 3000;
+
+// Function to generate a list of prime numbers using the Sieve of Eratosthenes
+vector<int> primes() {
+    bitset<MAX> bits;
+    bits[0] = bits[1] = 1; // Mark 0 and 1 as non-prime
+    int sqrt_max = static_cast<int>(sqrt(MAX)) + 1;
     vector<int> primes_vec;
-    
-    for(int i=2 ; i<=raiz ; i++){
-        if(bits[i]==1) continue;
-        int aux=i*i;
-        while(aux <= max){
-            bits[aux] = 1;
-            aux=aux+i;
+
+    // Sieve of Eratosthenes
+    for (int i = 2; i <= sqrt_max; i++) {
+        if (bits[i]) continue; // Skip if i is marked as non-prime
+        for (int j = i * i; j < MAX; j += i) {
+            bits[j] = 1; // Mark multiples of i as non-prime
         }
     }
 
-    for (int i=2 ; i<bits.size() ; i++) {
-        if(bits[i]==0){ 
-            primes_vec.push_back(i);
+    // Collecting prime numbers
+    for (int i = 2; i < bits.size(); i++) {
+        if (!bits[i]) {
+            primes_vec.push_back(i); // Add prime number to the vector
         }
     }
-
     return primes_vec;
 }
 

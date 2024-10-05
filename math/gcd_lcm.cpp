@@ -1,54 +1,67 @@
-#include "bits/stdc++.h"
+#include <iostream>
+#include <algorithm> // For std::swap
+#include <numeric>   // For std::gcd (C++17)
+
 using namespace std;
 
+// Function to count the number of trailing zeroes in the binary representation of n
 unsigned long long int trailing_zeroes(unsigned long long int n) {
-	unsigned long long int bits = 0, x = n;
-	if (x) {
-		while ((x & 1) == 0) {
-			++bits;
-			x >>= 1;
-		}
-	}
-	return bits;
-}
-//Euclidean algorithm by division
-//most efficient i've found thus far
-//TC := O(log(a+b))
-//a>=b
-unsigned long long int gcd(unsigned long long int a, unsigned long long int b) {
-    if (!a || !b)
-        return a | b;
-	unsigned long long int shift = trailing_zeroes(a | b);
-    a >>= trailing_zeroes(a);
-    do {
-        b >>= trailing_zeroes(b);
-        if (a > b)
-            swap(a, b);
-        b -= a;
-    } while (b);
-    return a << shift;
-}
-//a>=b
-unsigned long long int lcm(unsigned long long int a, unsigned long long int b) {
-	if (a + b == 0) {
-		return 0;
-	}
-	//will probably overflow because of a*b lol
-	return (a / gcd(a, b)) * b;
+    unsigned long long int bits = 0;
+    while (n && (n & 1) == 0) {
+        ++bits;
+        n >>= 1;
+    }
+    return bits;
 }
 
-int main(){
-    int a=1;
-    cin>>a;
-    while(a!=0){
-        int cont=0;
-        for(int i=0 ; i<a ; i++){
-            if(gcd(i,a)==1){
-                cont++;
-            }
+// Efficient GCD calculation using the Euclidean algorithm
+unsigned long long int gcd(unsigned long long int a, unsigned long long int b) {
+    if (a == 0 || b == 0) {
+        return a | b; // Return non-zero value
+    }
+    
+    unsigned long long int shift = trailing_zeroes(a | b);
+    a >>= trailing_zeroes(a); // Remove factors of 2 from a
+    
+    do {
+        b >>= trailing_zeroes(b); // Remove factors of 2 from b
+        if (a > b) {
+            swap(a, b);
         }
-        cout<<cont<<endl;
-        cin>>a;
-    }   
+        b -= a; // Subtract a from b
+    } while (b != 0);
+
+    return a << shift; // Restore factors of 2
+}
+
+// LCM calculation using GCD
+unsigned long long int lcm(unsigned long long int a, unsigned long long int b) {
+    if (a == 0 && b == 0) {
+        return 0; // LCM of 0 and 0 is undefined
+    }
+    return (a / gcd(a, b)) * b; // Calculate LCM
+}
+
+// Function to count the number of integers less than a that are coprime to a
+unsigned long long int countCoprimes(unsigned long long int a) {
+    unsigned long long int count = 0;
+    for (unsigned long long int i = 1; i < a; i++) {
+        if (gcd(i, a) == 1) {
+            count++;
+        }
+    }
+    return count;
+}
+
+int main() {
+    unsigned long long int a;
+    cin >> a;
+
+    while (a != 0) {
+        unsigned long long int coprimeCount = countCoprimes(a);
+        cout << coprimeCount << endl;
+        cin >> a;
+    }
+
     return 0;
 }
