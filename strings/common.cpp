@@ -55,6 +55,23 @@ vector<string> splitString(const string& str, char delimiter) {
     }
     return tokens;
 }
+`
+vector<string> splitString(const string& str, const string& delimiter) {
+    vector<string> tokens;
+    size_t start = 0; // Start position of the substring
+    size_t end;       // End position where the delimiter is found
+
+    while ((end = str.find(delimiter, start)) != string::npos) {
+        // Extract the substring from start to the position of the delimiter
+        tokens.push_back(str.substr(start, end - start));
+        // Move the start position past the delimiter
+        start = end + delimiter.length();
+    }
+    // Add the last substring after the last delimiter
+    tokens.push_back(str.substr(start));
+
+    return tokens;
+}
 
 // Check if a string contains only digits
 bool isNumeric(const string& str) {

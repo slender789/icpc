@@ -1,4 +1,6 @@
 greedy/
+*.bin
+*.txt
 .vscode/
 .cph/
-*.bin
+icpc_jordania/
